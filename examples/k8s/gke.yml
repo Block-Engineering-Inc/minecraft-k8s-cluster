@@ -3,6 +3,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: fast-disk
+  namespace: mc-server
 provisioner: kubernetes.io/gce-pd
 allowVolumeExpansion: true
 parameters:
@@ -12,6 +13,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: mc-data
+  namespace: mc-server
 spec:
   storageClassName: fast-disk
   accessModes:
@@ -66,16 +68,17 @@ spec:
           mountPath: /data
       volumes:
       - name: mc-data
-      persistentVolumeClaim:
-        claimName: mc-data
-        selector:
-          matchLabels:
-            app: mc-vanilla
+        persistentVolumeClaim:
+          claimName: mc-data
+  selector:
+    matchLabels:
+      app: mc-vanilla
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mc-vanilla
+  namespace: mc-server
   labels:
     app: mc-vanilla
 spec:
