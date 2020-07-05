@@ -85,6 +85,6 @@ spec:
   selector:
     app: mc-vanilla
   ports:
-    - port: 19132
-      protocol: UDP
+    - port: 25565
+      protocol: TCP
   type: LoadBalancer
