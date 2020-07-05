@@ -29,7 +29,7 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
           periodSeconds: 5
         livenessProbe:
           exec:
@@ -37,7 +37,7 @@ spec:
             - mcstatus
             - localhost
             - ping
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
           periodSeconds: 5
         volumeMounts:
         - name: mc-data
