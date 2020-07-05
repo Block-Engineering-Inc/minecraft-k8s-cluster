@@ -66,11 +66,11 @@ spec:
           mountPath: /data
       volumes:
       - name: mc-data
-    persistentVolumeClaim:
-      claimName: mc-data
-      selector:
-        matchLabels:
-          app: mc-vanilla
+      persistentVolumeClaim:
+        claimName: mc-data
+        selector:
+          matchLabels:
+            app: mc-vanilla
 ---
 apiVersion: v1
 kind: Service
