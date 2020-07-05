@@ -45,3 +45,22 @@ spec:
       volumes:
       - name: mc-data
         emptyDir: {}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mc-cluster-disk
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /data
+    server: 172.17.0.2
