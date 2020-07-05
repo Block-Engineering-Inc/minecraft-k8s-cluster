@@ -1,7 +1,29 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-disk
+provisioner: kubernetes.io/gce-pd
+allowVolumeExpansion: true
+parameters:
+  type: pd-ssd
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mc-data
+spec:
+  storageClassName: fast-disk
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mc-vanilla-1
+  name: mc-vanilla
   creationTimestamp: "2020-07-04T22:11:51Z"
   namespace: mc-server
   selfLink: /apis/apps/v1/namespaces/mc-server/deployments/mc-vanilla-1
@@ -44,23 +66,22 @@ spec:
           mountPath: /data
       volumes:
       - name: mc-data
-        emptyDir: {}
+    persistentVolumeClaim:
+      claimName: mc-data
+      selector:
+        matchLabels:
+          app: mc-vanilla
 ---
 apiVersion: v1
-kind: PersistentVolume
+kind: Service
 metadata:
-  name: mc-cluster-disk
+  name: mc-vanilla
+  labels:
+    app: mc-vanilla
 spec:
-  capacity:
-    storage: 5Gi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle
-  storageClassName: slow
-  mountOptions:
-    - hard
-    - nfsvers=4.1
-  nfs:
-    path: /data
-    server: 172.17.0.2
+  selector:
+    app: mc-vanilla
+  ports:
+    - port: 19132
+      protocol: UDP
+  type: LoadBalancer
